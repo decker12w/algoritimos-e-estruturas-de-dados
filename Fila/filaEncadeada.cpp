@@ -1,92 +1,108 @@
 #include <iostream>
 
+// Definição da estrutura Node
 struct Node {
-    int info;
+    int data;
     Node* prox;
 };
 
+// Definição da classe Fila
 class Fila {
-    private:
-        Node* inicio;
-        Node* fim; 
-    public:
-        Fila() { // Construtor para inicializar a fila
-            inicio = nullptr;
-            fim = nullptr;
-        }
+    Node* primeiro;
+    Node* ultimo;
 
-        bool cheio() {
-            // Não estamos rastreando o tamanho da fila, então você pode retornar sempre falso.
-            return false;
-        }
-
-        bool vazio() {
-            return (inicio == nullptr);
-        }
-
-        void insere(int x, bool &deuCerto) {
-            Node* ptrNovo = new Node;
-            ptrNovo->info = x;
-            ptrNovo->prox = nullptr;
-            
-            if (cheio()) {
-                deuCerto = false;
-            } else {
-                if (vazio()) {
-                    inicio = ptrNovo;
-                    fim = ptrNovo;
-                } else {
-                    fim->prox = ptrNovo;
-                    fim = ptrNovo;
-                }
-                deuCerto = true;
-            }
-        }
-
-void remove(int &x, bool &deuCerto) {
-    if (vazio()) {
-        deuCerto = false;
-    } else {
-        Node* ptrNovo = inicio;
-        x = ptrNovo->info;
-        inicio = ptrNovo->prox;
-        delete ptrNovo;
-        deuCerto = true;
+public:
+    Fila() {
+        primeiro = nullptr;
+        ultimo = nullptr;
     }
-}
 
-}
+    bool vazia() {
+        return (primeiro == nullptr);
+    }
 
-;
+    bool cheio() {
+        return false;
+    }
+
+    void insere(int x, bool& ok) {
+        if (cheio()) {
+            ok = false;
+        }
+        else {
+            Node* ptr = new Node();
+            ptr->data = x;
+
+            if (primeiro == nullptr) {
+                primeiro = ptr;
+                ultimo = ptr;
+                ptr->prox = ptr;
+            }
+            else {
+                ultimo->prox = ptr;
+                ultimo = ptr;
+            }
+            ok = true;
+        }
+    }
+
+    void remove(int& x, bool& ok) {
+        if (vazia()) {
+            ok = false;
+        }
+        else {
+            Node* remove = primeiro;
+            x = remove->data;
+
+            if (primeiro == ultimo) {
+                primeiro = nullptr;
+                ultimo = nullptr;
+            }
+            else {
+                primeiro = primeiro->prox;
+            }
+            delete remove;
+            ok = true;
+        }
+    }
+
+    void mostraFila() {
+        if (vazia()) {
+            std::cout << "Fila vazia" << std::endl;
+            return;
+        }
+
+        Node* temp = primeiro;
+        std::cout << "Conteúdo da fila: ";
+        while (temp != nullptr) {
+            std::cout << temp->data << " ";
+            temp = temp->prox;
+        }
+        std::cout << std::endl;
+    }
+};
 
 int main() {
-    Fila fila1;
-    bool deuCerto;
-    std::cout << fila1.cheio() << std::endl;
-    std::cout << fila1.vazio() << std::endl;
-    int x;
-    fila1.insere(2, deuCerto);
-    fila1.insere(3, deuCerto);
-    fila1.insere(4, deuCerto);
-    fila1.insere(5, deuCerto);
-    fila1.remove(x,deuCerto);
-    fila1.remove(x,deuCerto);
-    fila1.remove(x,deuCerto);
-    fila1.insere(2, deuCerto);
-    fila1.insere(3, deuCerto);
-    fila1.insere(4, deuCerto);
-    fila1.insere(5, deuCerto);
+    Fila fila;
+    bool ok;
 
-    while (!fila1.vazio()) {
-    int x;
-    bool deuCerto;
-    fila1.remove(x, deuCerto);
-    if (deuCerto) {
-        std::cout << x << std::endl;
-    } else {
-        std::cout << "Erro ao remover." << std::endl;
-    }
+    // Inserindo elementos na fila
+    fila.insere(10, ok);
+    fila.insere(20, ok);
+    fila.insere(30, ok);
+
+    // Visualizando a fila
+    fila.mostraFila();
+
+    // Removendo elementos da fila e exibindo
+    int valor_removido;
+    fila.remove(valor_removido, ok);
+    fila.remove(valor_removido, ok);
+    fila.remove(valor_removido, ok);
+    std::cout << "Valor removido: " << valor_removido << std::endl;
+
+    // Visualizando a fila após a remoção
+    fila.mostraFila();
+
+    return 0;
 }
-
-}
-
